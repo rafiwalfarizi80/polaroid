@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Kak Deyan ❤️</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Times New Roman", serif;
+}
+
+body {
+  height: 100vh;
+  background: radial-gradient(circle at top, #ff4d6d, #0f0f0f 70%);
+  overflow: hidden;
+}
+
+/* OPENING */
+.opening {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 25px;
+  background: #ff4d6d;
+  color: white;
+  cursor: pointer;
+}
+
+/* POLAROID */
+.polaroid {
+  position: absolute;
+  width: 180px;
+  background: white;
+  padding: 8px 8px 30px;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  opacity: 0;
+  transform: scale(0.5) rotate(0deg);
+  transition: 1s;
+}
+
+.polaroid img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+/* HEART */
+.heart {
+  position: absolute;
+  color: rgba(255, 77, 109, 0.4);
+  animation: float 6s linear infinite;
+}
+
+@keyframes float {
+  from { transform: translateY(100vh); opacity: 0; }
+  20% { opacity: 1; }
+  to { transform: translateY(-100px); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="opening" id="opening">
+  <button onclick="start()">Klik ya ❤️</button>
+</div>
+
+<!-- MUSIC -->
+<audio id="music" loop>
+  <source src="beyours.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const photos = [
+  "foto1.jpg",
+  "foto2.jpg",
+  "foto3.jpg",
+  "foto4.jpg",
+  "foto5.jpg",
+  "foto6.jpg"
+];
+
+function start() {
+  document.getElementById("opening").style.display = "none";
+
+  let music = document.getElementById("music");
+  music.play();
+
+  // muncul satu-satu
+  photos.forEach((src, i) => {
+    setTimeout(() => {
+      let polaroid = document.createElement("div");
+      polaroid.className = "polaroid";
+
+      let img = document.createElement("img");
+      img.src = src;
+
+      polaroid.appendChild(img);
+
+      // posisi random
+      polaroid.style.top = Math.random() * 70 + "%";
+      polaroid.style.left = Math.random() * 70 + "%";
+      polaroid.style.transform = `scale(1) rotate(${Math.random()*20-10}deg)`;
+      polaroid.style.opacity = 1;
+
+      document.body.appendChild(polaroid);
+    }, i * 800); // delay antar foto
+  });
+
+  // hearts
+  for (let i = 0; i < 20; i++) {
+    let heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤";
+
+    heart.style.left = Math.random() * 100 + "%";
+    heart.style.fontSize = (15 + Math.random() * 20) + "px";
+
+    document.body.appendChild(heart);
+  }
+}
+</script>
+
+</body>
+</html>
