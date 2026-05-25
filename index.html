@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For Kak Deyan ❤️</title>
+<title>Memories ❤️</title>
 
 <style>
 * {
@@ -11,74 +11,162 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Times New Roman", serif;
+  scroll-behavior: smooth;
 }
 
 body {
+  background: black;
+  color: white;
+  overflow-x: hidden;
+}
+
+/* STAR BACKGROUND */
+.stars {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: url("https://www.transparenttextures.com/patterns/stardust.png");
+  opacity: 0.4;
+  animation: moveStars 60s linear infinite;
+  z-index: -1;
+}
+
+@keyframes moveStars {
+  from { background-position: 0 0; }
+  to { background-position: 1000px 1000px; }
+}
+
+/* SECTION */
+.section {
   height: 100vh;
-  background: radial-gradient(circle at top, #ff4d6d, #0f0f0f 70%);
-  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
 }
 
 /* OPENING */
 .opening {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: radial-gradient(circle, #ff4d6d, black);
 }
 
 button {
-  padding: 12px 24px;
+  padding: 14px 28px;
+  border-radius: 30px;
   border: none;
-  border-radius: 25px;
   background: #ff4d6d;
   color: white;
+  font-size: 16px;
   cursor: pointer;
 }
 
 /* POLAROID */
+.gallery {
+  position: relative;
+}
+
 .polaroid {
   position: absolute;
-  width: 180px;
+  width: 160px;
   background: white;
   padding: 8px 8px 30px;
   border-radius: 6px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.7);
   opacity: 0;
-  transform: scale(0.5) rotate(0deg);
-  transition: 1s;
+  transform: scale(0.5);
+  transition: 0.8s;
 }
 
 .polaroid img {
   width: 100%;
-  height: 150px;
+  height: 130px;
   object-fit: cover;
 }
 
-/* HEART */
-.heart {
-  position: absolute;
-  color: rgba(255, 77, 109, 0.4);
-  animation: float 6s linear infinite;
+/* FLASH EFFECT */
+.flash {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
 }
 
-@keyframes float {
-  from { transform: translateY(100vh); opacity: 0; }
-  20% { opacity: 1; }
-  to { transform: translateY(-100px); opacity: 0; }
+/* TEXT */
+.memories {
+  font-size: 38px;
+  letter-spacing: 6px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: 2s;
+}
+
+.message {
+  font-size: 18px;
+  max-width: 80%;
+  opacity: 0;
+  line-height: 1.7;
+  margin-top: 20px;
+  transition: 2s;
+}
+
+.end {
+  font-size: 20px;
+  opacity: 0;
+  transition: 3s;
+}
+
+/* FADE BLACK */
+.fade {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: black;
+  opacity: 0;
+  transition: 4s;
+  z-index: 999;
 }
 </style>
 </head>
 
 <body>
 
-<div class="opening" id="opening">
+<div class="stars"></div>
+<div class="flash" id="flash"></div>
+
+<!-- OPENING -->
+<div class="section opening">
   <button onclick="start()">Klik ya ❤️</button>
 </div>
 
-<!-- MUSIC -->
+<!-- GALLERY -->
+<div class="section gallery" id="gallery"></div>
+
+<!-- MEMORIES -->
+<div class="section">
+  <div class="memories" id="memories">memories</div>
+</div>
+
+<!-- MESSAGE -->
+<div class="section">
+  <div class="message" id="message">
+    we didn’t notice we were making memories<br><br>
+    some moments never fade,<br>
+    they just stay in the heart forever
+  </div>
+</div>
+
+<!-- END -->
+<div class="section end" id="end">
+  thank you 🤍
+</div>
+
+<div class="fade" id="fade"></div>
+
+<!-- AUDIO -->
 <audio id="music" loop>
   <source src="beyours.mp3" type="audio/mpeg">
 </audio>
@@ -93,15 +181,34 @@ const photos = [
   "foto6.jpg"
 ];
 
-function start() {
-  document.getElementById("opening").style.display = "none";
+function flashEffect() {
+  let flash = document.getElementById("flash");
+  flash.style.opacity = 1;
+  setTimeout(() => {
+    flash.style.opacity = 0;
+  }, 150);
+}
 
+function start() {
   let music = document.getElementById("music");
+  music.volume = 0;
   music.play();
 
-  // muncul satu-satu
+  // fade in music
+  let fadeIn = setInterval(() => {
+    if (music.volume < 1) {
+      music.volume += 0.05;
+    } else {
+      clearInterval(fadeIn);
+    }
+  }, 200);
+
+  let gallery = document.getElementById("gallery");
+
   photos.forEach((src, i) => {
     setTimeout(() => {
+      flashEffect();
+
       let polaroid = document.createElement("div");
       polaroid.className = "polaroid";
 
@@ -110,28 +217,54 @@ function start() {
 
       polaroid.appendChild(img);
 
-      // posisi random
       polaroid.style.top = Math.random() * 70 + "%";
       polaroid.style.left = Math.random() * 70 + "%";
       polaroid.style.transform = `scale(1) rotate(${Math.random()*20-10}deg)`;
       polaroid.style.opacity = 1;
 
-      document.body.appendChild(polaroid);
-    }, i * 800); // delay antar foto
+      gallery.appendChild(polaroid);
+
+    }, i * 700);
   });
-
-  // hearts
-  for (let i = 0; i < 20; i++) {
-    let heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "❤";
-
-    heart.style.left = Math.random() * 100 + "%";
-    heart.style.fontSize = (15 + Math.random() * 20) + "px";
-
-    document.body.appendChild(heart);
-  }
 }
+
+/* SCROLL ANIMATION */
+window.addEventListener("scroll", () => {
+  let mem = document.getElementById("memories");
+  let msg = document.getElementById("message");
+  let end = document.getElementById("end");
+  let fade = document.getElementById("fade");
+  let music = document.getElementById("music");
+
+  let scroll = window.scrollY;
+
+  if (scroll > 500) {
+    mem.style.opacity = 1;
+    mem.style.transform = "translateY(0)";
+  }
+
+  if (scroll > 1000) {
+    msg.style.opacity = 1;
+  }
+
+  if (scroll > 1600) {
+    end.style.opacity = 1;
+  }
+
+  if (scroll > 2000) {
+    fade.style.opacity = 1;
+
+    // fade out music
+    let fadeOut = setInterval(() => {
+      if (music.volume > 0.05) {
+        music.volume -= 0.05;
+      } else {
+        music.pause();
+        clearInterval(fadeOut);
+      }
+    }, 200);
+  }
+});
 </script>
 
 </body>
